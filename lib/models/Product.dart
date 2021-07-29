@@ -6,7 +6,7 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 class Product {
-  final int id;
+  final String id;
   final String name;
   final String imagem;
   final double price;
