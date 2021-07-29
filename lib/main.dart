@@ -8,26 +8,38 @@ import 'package:confere/database/db.dart';
 import 'package:confere/models/Product.dart';
 import 'package:sqflite/sqflite.dart';
 import './blocs/blocsDatabase.dart';
+import 'components/ProductListItem.dart';
+import 'components/TitleConfere.dart';
 
 DB database = new DB();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await database.init();
-  await database.products();
-  Product p = new Product(
-      id: '3',
-      name: 'A Notebook',
+
+  Product p1 = new Product(
+      id: '1',
+      name: 'Notebook',
       imagem:
           'https://images-shoptime.b2w.io/produtos/01/00/img/3081358/8/3081358804_1GG.jpg',
       price: 2000.00,
-      promotionPrice: 1899.99,
+      promotionPrice: 1599.99,
       discountPercentage: 0.2,
       available: "true");
-  await database.insert(p);
-  await database.products();
+  await database.insert(p1);
+
+  Product p2 = new Product(
+      id: '2',
+      name: 'Smartphone Poco X3 PRO',
+      imagem:
+          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTD1jHETRGhxaAAanKnm0-f6f8qsd5l8lF-MRZ2rTxxa-d5CNBZ_uyh7sgKynVSlfSwCZ-qu7zl&usqp=CAc',
+      price: 2000.00,
+      promotionPrice: 0.00,
+      discountPercentage: 0.00,
+      available: "true");
+  await database.insert(p2);
+
   var prods = await database.products();
-  print(database.products());
   runApp(ConfereApp(prods));
 }
 
@@ -65,16 +77,7 @@ class _HomePageState extends State<HomePage> {
     bool available = false;
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          children: <Widget>[
-            Image(
-              width: 200,
-              height: 200,
-              image: NetworkImage(
-                  'https://www.conferecartoes.com.br/hubfs/logo-209.png'),
-            ),
-          ],
-        ),
+        title: TitleConfere(),
         centerTitle: true,
         backgroundColor: Colors.white70,
       ),
@@ -105,87 +108,7 @@ class _HomePageState extends State<HomePage> {
                                 height: 180,
                                 margin: const EdgeInsets.only(bottom: 5),
                                 color: Colors.lightBlueAccent[40],
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: <Widget>[
-                                    Column(children: <Widget>[
-                                      snapshot.data![index].imagem == 'none'
-                                          ? Container(
-                                              width: 170,
-                                              height: 170,
-                                              color: Colors.grey[300],
-                                              child: Center(
-                                                child: Text('Sem Imagem'),
-                                              ),
-                                            )
-                                          : Image(
-                                              image: NetworkImage(
-                                                  snapshot.data![index].imagem),
-                                              width: 170,
-                                              height: 170),
-                                    ]),
-                                    Column(
-                                      children: <Widget>[
-                                        Container(
-                                            margin: const EdgeInsets.only(
-                                                top: 10, bottom: 35),
-                                            child: Text(
-                                              snapshot.data![index].name,
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 15),
-                                            )),
-                                        snapshot.data![index]
-                                                    .discountPercentage >
-                                                0.00
-                                            ? Text('De R\$ ' +
-                                                snapshot.data![index].price
-                                                    .toString())
-                                            : Text('R\$ ' +
-                                                snapshot.data![index].price
-                                                    .toString()),
-                                        snapshot.data![index]
-                                                    .discountPercentage >
-                                                0.00
-                                            ? Text(
-                                                'Por R\$ ' +
-                                                    snapshot.data![index]
-                                                        .promotionPrice
-                                                        .toString(),
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.red))
-                                            : Container(),
-                                        snapshot.data![index]
-                                                    .discountPercentage >
-                                                0.00
-                                            ? Text(
-                                                'Desconto de ' +
-                                                    snapshot.data![index]
-                                                        .discountPercentage
-                                                        .toString() +
-                                                    '%',
-                                                style: TextStyle(
-                                                    color: Colors.red),
-                                              )
-                                            : Container(),
-                                        snapshot.data![index].available ==
-                                                "true"
-                                            ? Container(
-                                                child: Text(
-                                                'Produto disponível',
-                                                style: TextStyle(
-                                                    color: Colors.blue),
-                                              ))
-                                            : Container(
-                                                child: Text(
-                                                    'Produto indisponivel'),
-                                              )
-                                      ],
-                                    )
-                                  ],
-                                ),
+                                child: ProductListItem(snapshot.data![index]),
                               ),
                               actionPane: SlidableDrawerActionPane(),
                               actionExtentRatio: 0.50,
